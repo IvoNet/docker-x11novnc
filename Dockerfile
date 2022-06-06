@@ -1,16 +1,17 @@
-FROM alpine:3.12.1 as builder
+FROM alpine:3.16.0 as builder
 
-RUN apk --update --upgrade add \
-    git \
- && git clone https://github.com/kanaka/noVNC.git /root/noVNC \
+#TODO renew the image
+#https://github.com/theasp/docker-novnc/blob/master/Dockerfile
+
+RUN apk --update --upgrade add git
+RUN git clone https://github.com/kanaka/noVNC.git /root/noVNC \
  && git clone https://github.com/kanaka/websockify /root/noVNC/utils/websockify \
  && rm -rf /root/noVNC/.git \
  && rm -rf /root/noVNC/utils/websockify/.git \
- && apk del git \
  && sed -i -- "s/ps -p/ps -o pid | grep/g" /root/noVNC/utils/launch.sh \
  && cp /root/noVNC/vnc.html /root/noVNC/index.html
 
-FROM alpine:3.12.1
+FROM alpine:3.16.0
 
 COPY --from=builder /root/noVNC /root/noVNC
 
